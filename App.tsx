@@ -10,21 +10,16 @@ import {checkToken} from './api/user';
 const App = () => {
   const appState = useRef(AppState.currentState);
   useEffect(() => {
-    const subscription = AppState.addEventListener(
-      'change',
-      async nextAppState => {
-        if (
-          appState.current.match(/inactive|background/) &&
-          nextAppState === 'active'
-        ) {
-          console.log('You have come back into the app');
-          await checkToken();
-        }
-        appState.current = nextAppState;
-      },
-    );
+    AppState.addEventListener('change', async nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        await checkToken();
+      }
+      appState.current = nextAppState;
+    });
     checkToken();
-    console.log('App has rendered');
   }, []);
   return (
     <Provider store={store}>
